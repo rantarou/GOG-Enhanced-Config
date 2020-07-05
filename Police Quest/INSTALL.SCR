@@ -1,0 +1,117 @@
+clear
+:Choose
+godir %1:%4 cantcreate
+echo
+echo You have two options for installing Shadows of 
+echo Darkness to your hard drive. The *full* installation
+echo copies many game resources and sound effects
+echo (20 M). The *tiny*	install copies only a small 
+echo configuration file. If your CD-ROM is slow, and you 
+echo have the drive space available, you may wish to 
+echo select the *full* install. Regardless of your install 
+echo choice you will still need the CD loaded to run 
+echo the game.
+echo
+echo Enter your choice: (f)ull, (t)iny
+pick ft full tiny
+break
+
+:full
+space %1: 20000 nospace
+echo Copying files to %1:%4 ...
+echo @echo off >..\qg4cd.bat
+echo cd %4 >>..\qg4cd.bat
+echo call CheckCD	%2 >>..\qg4cd.bat
+rem echo sci -i0 >>..\qg4cd.bat
+echo sierra >>..\qg4cd.bat
+echo cd .. >>..\qg4cd.bat
+echo @echo off >qg4cd.bat
+echo call CheckCD	%2 >>qg4cd.bat
+rem echo sci -i0 >>qg4cd.bat
+echo sierra >>qg4cd.bat
+echo %3 >resource.cfg
+echo resAUD=%2:	>> resource.cfg
+echo resSFX=%1:%4 >> resource.cfg
+echo patchDir=%1:%4;%2:;%2:\patches >>resource.cfg
+echo audiosize=63k >>resource.cfg
+copy %2:qgcheck.bat %1:checkcd.bat
+copy %2:install.* %1:
+copy %2:sierra.err %1:
+copy %2:*.drv %1:
+copy %2:resource.000 %1:
+copy %2:resource.map %1:
+copy %2:65535.map %1:
+rem copy %2:sci.exe %1:
+copy %2:sierra.exe %1:
+copy %2:resource.sfx %1:
+copy %2:flythru.seq %1:
+copy %2:\patches\*.* %1: /q
+copy %2:version %1:
+goto done
+
+:tiny
+space %1: 2 nospace2
+copy %2:version %1:
+echo @echo off >..\qg4cd.bat
+echo cd %4 >>..\qg4cd.bat
+echo call CheckCD %2 >>..\qg4cd.bat
+echo %2: >>..\qg4cd.bat
+rem echo sci -i0 %1:%4\resource.cfg >>..\qg4cd.bat
+echo sierra %1:%4\resource.cfg >>..\qg4cd.bat
+echo %1: >>..\qg4cd.bat
+echo @echo off >qg4cd.bat
+echo call CheckCD %2 >>qg4cd.bat
+echo %2: >> qg4cd.bat
+rem echo sci -i0 %1:%4\resource.cfg >>qg4cd.bat
+echo sierra %1:%4\resource.cfg >>qg4cd.bat
+echo %1: >> qg4cd.bat
+echo %3 >resource.cfg
+echo resAUD = %2: >> resource.cfg
+echo resSFX = %2: >> resource.cfg
+echo patchDir = %1:%4;%2:;%2:\patches >>resource.cfg
+echo audiosize = 63k >>resource.cfg
+copy %2:qgcheck.bat %1:checkcd.bat
+goto done
+
+:done
+cd ..
+cls
+echo
+echo ÿTo play Shadows of Darkness now:
+echo ÿ   Type qg4cd [ENTER].
+echo
+echo ÿTo play Shadows of Darkness later:
+echo ÿ   From the directory of %1:%4,
+echo ÿ   Type qg4cd and press [ENTER].
+echo
+pause
+goto quit
+
+:cantcreate
+alert Unable to create directory %1:%4
+pause
+goto quit
+
+:nospace
+cls
+echo
+echo There is not enough space on %1: to install. 
+echo 20 Megabytes of disk space are necessary for
+echo the full install.
+echo
+pause
+goto quit
+
+:nospace2
+cls
+echo
+echo There is not enough space on %1: to install. 
+echo 2 kilobyte of disk space are necessary for
+echo the tiny install.
+echo
+pause
+goto quit
+
+:quit
+end
+
